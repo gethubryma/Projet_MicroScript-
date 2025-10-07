@@ -2,26 +2,14 @@ from backend.lexer import lexer
 from backend.parser import Parser
 from backend.interpreter import Interpreter
 
-if __name__ == "__main__":
-    code = """
-x = 10
-y = x + 5
-print(y)
-if y > 10:
-    print(y)
-"""
-
+def test_interpreter_basic(capsys):
+    code = "x = 2\ny = x + 3\nprint(y)"
     tokens = lexer(code)
-    print("TOKENS")
-    for t in tokens:
-        print(t)
-
     parser = Parser(tokens)
     ast = parser.parse()
-
-    print("\n AST GÉNÉRÉ ")
-    print(ast)
-
-    print("\n=== EXÉCUTION ===")
     interpreter = Interpreter()
     interpreter.eval(ast)
+
+    captured = capsys.readouterr()
+    assert captured.out.strip() == "5"
+

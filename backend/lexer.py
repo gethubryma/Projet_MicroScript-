@@ -1,6 +1,6 @@
 import re
 
-# --- Spécification des tokens ---
+# Spécification des tokens
 TOKEN_SPEC = [
     ('NUMBER',   r'\d+(\.\d+)?'),              # Nombres entiers ou réels
     ('ID',       r'[A-Za-z_][A-Za-z0-9_]*'),   # Identificateurs (variables, mots-clés)
@@ -14,7 +14,7 @@ TOKEN_SPEC = [
     ('MISMATCH', r'.'),                        # Tout le reste → erreur
 ]
 
-# --- Mots-clés réservés ---
+# Mots-clés réservés 
 KEYWORDS = {'if', 'else', 'for', 'while', 'print', 'in', 'range'}
 
 def lexer(code):
@@ -49,5 +49,6 @@ def lexer(code):
 
         elif kind == 'MISMATCH':
             raise SyntaxError(f"Caractère inconnu: {value}")
-
+    
+    tokens.append(('EOF', None))  # Fin de fichier
     return tokens
