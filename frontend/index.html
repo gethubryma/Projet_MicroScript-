@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MicroScript IDE</title>
+    <link rel="stylesheet" href="css/style.css" />
+
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+</head>
+
+<body>
+    <div class="app">
+        <header>
+            <h1>MicroScript IDE</h1>
+            <div class="actions">
+                <button id="run-btn">▶ Exécuter</button>
+                <button id="format-btn" title="Simple indentation">✨</button>
+            </div>
+        </header>
+
+        <main class="grid">
+            <section class="panel">
+                <h2>Éditeur</h2>
+                <textarea id="editor"></textarea>
+            </section>
+
+            <section class="panel">
+                <h2>Sortie</h2>
+                <pre id="output" class="terminal"></pre>
+            </section>
+
+            <section class="panel full">
+                <h2>REPL</h2>
+                <div id="repl-log" class="terminal"></div>
+                <div class="repl-input">
+                    <span>&gt;&gt;&gt;</span>
+                    <input id="repl-line" type="text" placeholder="Tape une ligne puis Entrée…" />
+                    <button id="repl-run">Entrer</button>
+                    <button id="repl-reset" title="Réinitialiser la session">↺</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
