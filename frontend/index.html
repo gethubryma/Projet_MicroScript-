@@ -5,12 +5,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MicroScript IDE</title>
+    <meta name="theme-color" content="#0f1223" />
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128' viewBox='0 0 128 128'%3E%3Crect rx='24' width='128' height='128' fill='%23161a2e'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='56' fill='%236ea8fe'%3EMS%3C/text%3E%3C/svg%3E" />
 
-    <!-- CodeMirror -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
 </head>
 
 <body>
@@ -18,10 +22,20 @@
         <header>
             <h1>MicroScript IDE</h1>
             <div class="actions">
-                <button id="run-btn">▶ Exécuter</button>
+                <button id="run-btn" title="Exécuter (Ctrl/⌘+Entrée)">Exécuter</button>
                 <button id="format-btn" title="Simple indentation">✨</button>
+                <button id="run-timed" class="btn btn-secondary" title="Exécuter avec chrono">⏱ Exécuter</button>
             </div>
         </header>
+
+        <div class="toolbar mt-8">
+            <span class="badge">Éditeur</span>
+            <div class="spacer"></div>
+            <div class="statusbar">
+                <span class="dot" aria-hidden="true"></span>
+                <span id="status-text">Prêt</span>
+            </div>
+        </div>
 
         <main class="grid">
             <section class="panel">
@@ -31,12 +45,12 @@
 
             <section class="panel">
                 <h2>Sortie</h2>
-                <pre id="output" class="terminal"></pre>
+                <pre id="output" class="terminal" aria-live="polite"></pre>
             </section>
 
             <section class="panel full">
                 <h2>REPL</h2>
-                <div id="repl-log" class="terminal"></div>
+                <div id="repl-log" class="terminal" aria-live="polite"></div>
                 <div class="repl-input">
                     <span>&gt;&gt;&gt;</span>
                     <input id="repl-line" type="text" placeholder="Tape une ligne puis Entrée…" />
@@ -44,8 +58,135 @@
                     <button id="repl-reset" title="Réinitialiser la session">↺</button>
                 </div>
             </section>
+
+            <section class="panel">
+                <h2>Variables</h2>
+                <div id="vars-inspector" class="inspector">
+                    <div class="text-dim">Aucune variable pour le moment.</div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2>Pile d’appels</h2>
+                <div id="callstack-list" class="inspector">
+                    <div class="text-dim">Pile vide.</div>
+                </div>
+            </section>
+
+            <section class="panel full">
+                <h2>Debug</h2>
+                <div class="toolbar">
+                    <button id="dbg-start" class="btn">Démarrer debug</button>
+                    <button id="dbg-step" class="btn btn-secondary">Step</button>
+                    <button id="dbg-continue" class="btn btn-secondary">Continue</button>
+                    <div class="spacer"></div>
+                    <span class="badge">Breakpoints</span>
+                    <span id="dbg-bp" class="text-dim">aucun</span>
+                </div>
+                <div class="mt-8 text-dim">Active les points d’arrêt dans la gouttière de l’éditeur (si supporté) puis
+                    utilise Step/Continue.</div>
+            </section>
         </main>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.CodeMirror) {
+                setTimeout(() => {
+                    try {
+                        const ed = document.querySelector(".CodeMirror");
+                        if (ed && window.CodeMirror) {
+                            const cm = ed.CodeMirror;
+                            cm.setOption("styleActiveLine", true);
+                            cm.setOption("matchBrackets", true);
+                        }
+                    } catch { }
+                }, 0);
+            }
+
+            const timed = document.getElementById("run-timed");
+            if (timed && typeof runWithTiming === "function") {
+                timed.addEventListener("click", runWithTiming);
+            }
+
+            const dbgStart = document.getElementById("dbg-start");
+            const dbgStep = document.getElementById("dbg-step");
+            const dbgCont = document.getElementById("dbg-continue");
+            const bpLabel = document.getElementById("dbg-bp");
+
+            async function refreshDebugState() {
+                if (!window.DebugAPI || !DebugAPI.sid) return;
+                try {
+                    const state = await DebugAPI.state();
+                    const varsEl = document.getElementById("vars-inspector");
+                    const csEl = document.getElementById("callstack-list");
+                    if (varsEl) {
+                        varsEl.innerHTML = "";
+                        const vars = state.variables || {};
+                        const keys = Object.keys(vars);
+                        if (!keys.length) varsEl.innerHTML = '<div class="text-dim">Aucune variable.</div>';
+                        keys.forEach(k => {
+                            const v = vars[k];
+                            const card = document.createElement("div");
+                            card.className = "card";
+                            card.innerHTML = `<h3>${k}</h3><div class="kv"><span class="text-dim">valeur</span><span>${escapeHtml(String(v))}</span></div>`;
+                            varsEl.appendChild(card);
+                        });
+                    }
+                    if (csEl) {
+                        csEl.innerHTML = "";
+                        const frames = state.callstack || [];
+                        if (!frames.length) csEl.innerHTML = '<div class="text-dim">Pile vide.</div>';
+                        frames.forEach((f, i) => {
+                            const card = document.createElement("div");
+                            card.className = "card";
+                            card.innerHTML = `<h3>#${i} ${f.function || "(?)"}</h3><div class="kv"><span class="text-dim">fichier</span><span>${escapeHtml(String(f.filename || ""))}</span></div><div class="kv"><span class="text-dim">ligne</span><span>${escapeHtml(String(f.line || ""))}</span></div>`;
+                            csEl.appendChild(card);
+                        });
+                    }
+                    const dot = document.querySelector(".statusbar .dot");
+                    if (dot) dot.classList.toggle("err", !!state.error);
+                    const st = document.getElementById("status-text");
+                    if (st) st.textContent = state.paused ? "En pause" : "En cours/Terminé";
+                } catch { }
+            }
+
+            if (dbgStart) {
+                dbgStart.addEventListener("click", async () => {
+                    try {
+                        const code = document.querySelector(".CodeMirror").CodeMirror.getValue();
+                        const state = await DebugAPI.start(code, []);
+                        document.getElementById("status-text").textContent = state.paused ? "En pause" : "Démarré";
+                        refreshDebugState();
+                    } catch (e) {
+                        document.getElementById("status-text").textContent = "Erreur debug";
+                    }
+                });
+            }
+            if (dbgStep) {
+                dbgStep.addEventListener("click", async () => {
+                    try {
+                        await DebugAPI.step();
+                        refreshDebugState();
+                    } catch { }
+                });
+            }
+            if (dbgCont) {
+                dbgCont.addEventListener("click", async () => {
+                    try {
+                        await DebugAPI.cont();
+                        refreshDebugState();
+                    } catch { }
+                });
+            }
+
+            if (bpLabel && window.CodeMirror) {
+                bpLabel.textContent = "clic gouttière pour ajouter";
+            }
+        });
+
+        function escapeHtml(s) { return s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+    </script>
 
     <script src="js/app.js"></script>
 </body>
