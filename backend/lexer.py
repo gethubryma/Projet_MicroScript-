@@ -3,11 +3,22 @@ import re
 # Spécification des tokens
 TOKEN_SPEC = [
     ('NUMBER',   r'\d+(\.\d+)?'),              # Nombres entiers ou réels
+    ('STRING',   r'"[^"\n]*"'),                # Chaînes de caractères (sur une ligne)
     ('ID',       r'[A-Za-z_][A-Za-z0-9_]*'),   # Identificateurs (variables, mots-clés)
-    ('OP',       r'[+\-*/=<>!]'),              # Opérateurs simples
+
+    # Opérateurs (ordre important pour capter les multi-caractères)
+    ('OP',       r'\*\*|//|==|!=|>=|<=|[+\-*/%<>=]'),
+
     ('LPAREN',   r'\('),                       # Parenthèse ouvrante
     ('RPAREN',   r'\)'),                       # Parenthèse fermante
-    ('COLON',    r':'),                        # Pour if/for/while :
+    ('LBRACKET', r'\['),                       # Crochet ouvrant (listes / index)
+    ('RBRACKET', r'\]'),                       # Crochet fermant
+    ('LBRACE',   r'\{'),                       # Accolade ouvrante (dictionnaires)
+    ('RBRACE',   r'\}'),                       # Accolade fermante
+    ('DOT',      r'\.'),                       # Point (accès membre éventuel)
+    ('COLON',    r':'),                        # Deux-points
+    ('COMMA',    r','),                        # Virgule
+
     ('NEWLINE',  r'\n'),                       # Saut de ligne
     ('SKIP',     r'[ \t]+'),                   # Espaces et tabulations
     ('COMMENT',  r'\#.*'),                     # Commentaires
@@ -15,7 +26,13 @@ TOKEN_SPEC = [
 ]
 
 # Mots-clés réservés 
-KEYWORDS = {'if', 'else', 'for', 'while', 'print', 'in', 'range'}
+KEYWORDS = {
+    'if', 'elif', 'else',
+    'for', 'while', 'in',
+    'print', 'range',
+    'def', 'return',
+    'true', 'false'
+}
 
 def lexer(code):
     """Transforme le texte source en une liste de tokens."""
@@ -29,23 +46,27 @@ def lexer(code):
         if kind == 'NUMBER':
             tokens.append(('NUMBER', float(value) if '.' in value else int(value)))
 
+        elif kind == 'STRING':
+            tokens.append(('STRING', value))
+
         elif kind == 'ID':
-            if value in KEYWORDS:
-                tokens.append(('KEYWORD', value))
+            lower = value.lower()
+            if lower in KEYWORDS:
+                tokens.append(('KEYWORD', lower))
             else:
                 tokens.append(('ID', value))
 
         elif kind == 'OP':
             tokens.append(('OP', value))
 
-        elif kind in ('LPAREN', 'RPAREN', 'COLON'):
+        elif kind in ('LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'LBRACE', 'RBRACE', 'DOT', 'COLON', 'COMMA'):
             tokens.append((kind, value))
 
         elif kind == 'COMMENT':
-            continue  # On ignore les commentaires
+            continue
 
         elif kind in ('NEWLINE', 'SKIP'):
-            continue  # On ignore les espaces et les sauts de ligne
+            continue
 
         elif kind == 'MISMATCH':
             raise SyntaxError(f"Caractère inconnu: {value}")
