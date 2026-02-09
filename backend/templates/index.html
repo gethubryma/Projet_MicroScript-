@@ -1,0 +1,755 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAXA - Mon Langage Français | IDE Interactif</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-tertiary: #16213e;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #00ff9f;
+            --accent-gradient: linear-gradient(135deg, #00d4ff 0%, #00ff9f 100%);
+            --text-primary: #e6e6e6;
+            --text-secondary: #a0a0a0;
+            --border-color: #2d2d44;
+            --success: #00ff9f;
+            --error: #ff4757;
+            --warning: #ffa502;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Header */
+        header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--bg-primary);
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+        }
+        
+        .logo-text h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .logo-text p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .header-nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .nav-btn {
+            padding: 0.625rem 1.25rem;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Main Container */
+        .main-container {
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            min-height: calc(100vh - 200px);
+        }
+        
+        /* Panel Styles */
+        .panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        
+        .panel:hover {
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .panel-header {
+            padding: 1.25rem 1.5rem;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .panel-title {
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .panel-title::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent-secondary);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Editor */
+        .editor-wrapper {
+            flex: 1;
+            padding: 1.5rem;
+            position: relative;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            resize: none;
+            transition: all 0.3s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+        
+        /* Action Bar */
+        .action-bar {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: var(--bg-primary);
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+        }
+        
+        /* Examples */
+        .examples {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .example-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .example-btn:hover {
+            color: var(--accent-primary);
+            border-color: var(--accent-primary);
+            background: rgba(0, 212, 255, 0.05);
+        }
+        
+        /* Output */
+        #output {
+            flex: 1;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin: 1.5rem;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        
+        .success {
+            color: var(--success);
+            font-weight: 600;
+        }
+        
+        .error {
+            color: var(--error);
+            font-weight: 600;
+        }
+        
+        .warning {
+            color: var(--warning);
+            font-weight: 600;
+        }
+        
+        /* Input Container */
+        .input-container {
+            margin: 1.5rem;
+            padding: 1.5rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .input-container h4 {
+            margin-bottom: 1rem;
+            color: var(--accent-primary);
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+        
+        .input-submit {
+            background: var(--accent-gradient);
+            color: var(--bg-primary);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border-color);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🇫🇷</div>
+                <div class="logo-text">
+                    <h1>LAXA IDE</h1>
+                    <p>Mon Langage de Programmation Français</p>
+                </div>
+            </div>
+            <div class="header-nav">
+                <a href="/documentation" class="nav-btn">📚 Documentation</a>
+                <a href="/documentation-technique" class="nav-btn">🏗️ Technique</a>
+                <button class="nav-btn" onclick="clearEditor()">🗑️ Effacer</button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <div class="workspace">
+            <!-- Editor Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">💻 Éditeur de Code</div>
+                    <div class="examples">
+                        <button class="example-btn" onclick="chargerExemple('factorielle')">Factorielle</button>
+                        <button class="example-btn" onclick="chargerExemple('fibonacci')">Fibonacci</button>
+                        <button class="example-btn" onclick="chargerExemple('conditions')">Conditions</button>
+                        <button class="example-btn" onclick="chargerExemple('input')">Avec entrées</button>
+                    </div>
+                </div>
+                <div class="editor-wrapper">
+                    <textarea id="code" placeholder="Écrivez votre code LAXA ici...&#10;&#10;Exemples de syntaxe :&#10;  variable x = 10&#10;  afficher &quot;Bonjour&quot;&#10;  si x > 5&#10;    afficher &quot;x est grand&quot;&#10;  fin_si">
+# Exemple: commentaires avec # ou //
+// Déclaration et affichage
+variable x = 10
+variable y = 5
+
+variable somme = x + y
+afficher "La somme est : " + somme
+
+# Condition
+si somme > 10
+    afficher "La somme est supérieure à 10"
+sinon
+    afficher "La somme est inférieure ou égale à 10"
+fin_si
+
+# Fonctions: définition, appel et retour
+fonction carre(n)
+    retour n * n
+fin_fonction
+
+variable r = carre(6)
+afficher "carre(6) = " + r
+
+# Boucle
+variable i = 0
+tant_que i < 3
+    afficher "Itération : " + i
+    i = i + 1
+fin_tant_que
+
+# Tableaux et dictionnaires
+variable t = [1, 2, 3]
+afficher "t[1] = " + t[1]
+t[1] = 42
+afficher "t[1] après = " + t[1]
+
+variable d = {"a": 10, "b": 20}
+afficher "d[a] = " + d["a"]
+d["b"] = 99
+afficher "d[b] après = " + d["b"]
+
+# Fonctions built-in
+afficher "Longueur de t: " + len(t)
+afficher "Racine de 16: " + sqrt(16)
+afficher "Sinus de 0: " + sin(0)
+afficher "Valeur absolue de -5: " + abs(-5)
+afficher "Arrondi de 3.7: " + round(3.7)
+
+variable texte = "Bonjour"
+afficher "MAJ: " + maj(texte)
+afficher "min: " + min(texte)
+
+afficher "Nombre aléatoire: " + random()
+afficher "Date: " + date()
+afficher "Heure: " + heure()
+afficher "Année: " + annee()
+
+# Test de la fonction lire
+variable nom = lire("Votre nom: ")
+afficher "Bonjour " + nom
+
+variable age = input("Votre âge: ")
+afficher "Vous avez " + age + " ans"
+</textarea>
+                </div>
+                <div class="action-bar">
+                    <button class="btn btn-primary" onclick="executerCode()">▶️ Exécuter le Code</button>
+                    <button class="btn btn-secondary" onclick="clearEditor()">🔄 Effacer</button>
+                </div>
+            </div>
+            
+            <!-- Output Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">📊 Résultat d'Exécution</div>
+                </div>
+                <div id="output">Prêt à exécuter votre code LAXA... 🚀</div>
+                <div id="input-container" class="input-container" style="display: none;">
+                    <h4>⌨️ Entrées requises :</h4>
+                    <div id="input-fields"></div>
+                    <button class="input-submit" onclick="soumettreEntrees()">✅ Soumettre les entrées</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let entreesEnAttente = [];
+        let codeActuel = '';
+        
+        function clearEditor() {
+            if (confirm('Êtes-vous sûr de vouloir effacer le code ?')) {
+                document.getElementById('code').value = '';
+                document.getElementById('output').innerHTML = 'Éditeur effacé. Prêt pour un nouveau code ! 🚀';
+            }
+        }
+        
+        function executerCode() {
+            const code = document.getElementById('code').value;
+            const output = document.getElementById('output');
+            const inputContainer = document.getElementById('input-container');
+            
+            if (!code.trim()) {
+                output.innerHTML = '<span class="warning">⚠️ Veuillez écrire du code avant d\'exécuter.</span>';
+                return;
+            }
+            
+            codeActuel = code;
+            output.innerHTML = '<div class="loading"></div> Exécution en cours...';
+            inputContainer.style.display = 'none';
+            
+            fetch('/executer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code: code, entrees: [] })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    output.innerHTML = '<span class="success">✅ Exécution réussie !</span>\n\n';
+                    output.innerHTML += '═══════════════════════════════════\n';
+                    output.innerHTML += '📤 SORTIE DU PROGRAMME\n';
+                    output.innerHTML += '═══════════════════════════════════\n\n';
+                    output.innerHTML += data.resultat.join('\n');
+                    
+                    if (Object.keys(data.variables).length > 0) {
+                        output.innerHTML += '\n\n═══════════════════════════════════\n';
+                        output.innerHTML += '📦 VARIABLES EN MÉMOIRE\n';
+                        output.innerHTML += '═══════════════════════════════════\n';
+                        for (const [nom, valeur] of Object.entries(data.variables)) {
+                            output.innerHTML += `\n  ${nom} = ${JSON.stringify(valeur)}`;
+                        }
+                    }
+                    
+                    // Si des entrées sont requises, afficher l'interface
+                    if (data.entrees_requises && data.entrees_requises.length > 0) {
+                        entreesEnAttente = data.entrees_requises;
+                        afficherInterfaceEntrees();
+                    }
+                } else {
+                    output.innerHTML = '<span class="error">❌ Erreur d\'exécution</span>\n\n';
+                    output.innerHTML += '═══════════════════════════════════\n';
+                    output.innerHTML += '⚠️ DÉTAILS DE L\'ERREUR\n';
+                    output.innerHTML += '═══════════════════════════════════\n\n';
+                    output.innerHTML += data.erreur;
+                }
+            })
+            .catch(error => {
+                output.innerHTML = '<span class="error">❌ Erreur de connexion</span>\n\n';
+                output.innerHTML += '═══════════════════════════════════\n';
+                output.innerHTML += '⚠️ DÉTAILS DE L\'ERREUR\n';
+                output.innerHTML += '═══════════════════════════════════\n\n';
+                output.innerHTML += error;
+            });
+        }
+        
+        function afficherInterfaceEntrees() {
+            const inputContainer = document.getElementById('input-container');
+            const inputFields = document.getElementById('input-fields');
+            
+            inputFields.innerHTML = '';
+            
+            entreesEnAttente.forEach((prompt, index) => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <label>${prompt}</label>
+                    <input type="text" class="input-field" id="input-${index}" placeholder="Entrez votre réponse...">
+                `;
+                inputFields.appendChild(div);
+            });
+            
+            inputContainer.style.display = 'block';
+        }
+        
+        function soumettreEntrees() {
+            const entrees = [];
+            for (let i = 0; i < entreesEnAttente.length; i++) {
+                const input = document.getElementById(`input-${i}`);
+                entrees.push(input.value);
+            }
+            
+            const output = document.getElementById('output');
+            const inputContainer = document.getElementById('input-container');
+            
+            output.innerHTML = '<div class="loading"></div> Exécution avec les entrées fournies...';
+            inputContainer.style.display = 'none';
+            
+            fetch('/executer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code: codeActuel, entrees: entrees })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    output.innerHTML = '<span class="success">✅ Exécution réussie !</span>\n\n';
+                    output.innerHTML += '═══════════════════════════════════\n';
+                    output.innerHTML += '📤 SORTIE DU PROGRAMME\n';
+                    output.innerHTML += '═══════════════════════════════════\n\n';
+                    output.innerHTML += data.resultat.join('\n');
+                    
+                    if (Object.keys(data.variables).length > 0) {
+                        output.innerHTML += '\n\n═══════════════════════════════════\n';
+                        output.innerHTML += '📦 VARIABLES EN MÉMOIRE\n';
+                        output.innerHTML += '═══════════════════════════════════\n';
+                        for (const [nom, valeur] of Object.entries(data.variables)) {
+                            output.innerHTML += `\n  ${nom} = ${JSON.stringify(valeur)}`;
+                        }
+                    }
+                } else {
+                    output.innerHTML = '<span class="error">❌ Erreur d\'exécution</span>\n\n';
+                    output.innerHTML += '═══════════════════════════════════\n';
+                    output.innerHTML += '⚠️ DÉTAILS DE L\'ERREUR\n';
+                    output.innerHTML += '═══════════════════════════════════\n\n';
+                    output.innerHTML += data.erreur;
+                }
+            })
+            .catch(error => {
+                output.innerHTML = '<span class="error">❌ Erreur de connexion</span>\n\n';
+                output.innerHTML += '═══════════════════════════════════\n';
+                output.innerHTML += '⚠️ DÉTAILS DE L\'ERREUR\n';
+                output.innerHTML += '═══════════════════════════════════\n\n';
+                output.innerHTML += error;
+            });
+        }
+        
+        const exemples = {
+            factorielle: `variable n = 5
+variable resultat = 1
+variable i = 1
+
+tant_que i <= n
+    resultat = resultat * i
+    i = i + 1
+fin_tant_que
+
+afficher "Factorielle de " + n + " est " + resultat`,
+
+            fibonacci: `variable a = 0
+variable b = 1
+variable count = 10
+
+afficher "Suite de Fibonacci :"
+
+variable i = 0
+tant_que i < count
+    afficher a
+    variable temp = a + b
+    a = b
+    b = temp
+    i = i + 1
+fin_tant_que`,
+
+            conditions: `variable age = 18
+
+si age >= 18
+    afficher "Majeur"
+sinon
+    afficher "Mineur"
+fin_si
+
+variable note = 15
+
+si note >= 16
+    afficher "Très bien"
+sinon
+    si note >= 14
+        afficher "Bien"
+    sinon
+        si note >= 12
+            afficher "Assez bien"
+        sinon
+            afficher "Insuffisant"
+        fin_si
+    fin_si
+fin_si`,
+
+            input: `# Exemple avec entrées utilisateur
+afficher "=== Programme de saisie ==="
+
+variable nom = lire("Votre nom: ")
+variable age = input("Votre âge: ")
+variable ville = lire("Votre ville: ")
+
+afficher "Bonjour " + nom + " !"
+afficher "Vous avez " + age + " ans"
+afficher "Vous habitez à " + ville
+
+# Calcul avec l'âge
+variable age_prochain = age + 1
+afficher "L'année prochaine, vous aurez " + age_prochain + " ans"
+
+# Condition basée sur l'âge
+si age >= 18
+    afficher "Vous êtes majeur(e)"
+sinon
+    afficher "Vous êtes mineur(e)"
+fin_si`
+        };
+        
+        function chargerExemple(nom) {
+            document.getElementById('code').value = exemples[nom];
+        }
+    </script>
+</body>
+</html>

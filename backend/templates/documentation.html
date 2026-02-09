@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - Laxa | Mon Langage Français</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-tertiary: #16213e;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #00ff9f;
+            --accent-gradient: linear-gradient(135deg, #00d4ff 0%, #00ff9f 100%);
+            --text-primary: #e6e6e6;
+            --text-secondary: #a0a0a0;
+            --border-color: #2d2d44;
+            --success: #00ff9f;
+            --error: #ff4757;
+            --warning: #ffa502;
+            --info: #00d4ff;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+        
+        /* Header */
+        header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--bg-primary);
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+        }
+        
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .header-nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .nav-btn {
+            padding: 0.625rem 1.25rem;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn-primary {
+            background: var(--accent-gradient);
+            color: var(--bg-primary);
+            border: none;
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+        }
+        
+        .nav-btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+        }
+        
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(0, 255, 159, 0.05) 100%);
+            border-radius: 24px;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Sidebar Navigation */
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        
+        .sidebar {
+            position: sticky;
+            top: 120px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .sidebar h3 {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar nav a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            margin-bottom: 0.25rem;
+        }
+        
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent-primary);
+        }
+        
+        /* Content */
+        .content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .section {
+            margin-bottom: 4rem;
+        }
+        
+        .section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .section p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+        
+        .section ul, .section ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Code Blocks */
+        .code-block {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        
+        .code-block pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-tertiary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875em;
+            color: var(--accent-secondary);
+        }
+        
+        /* Info Boxes */
+        .info-box {
+            background: rgba(0, 212, 255, 0.05);
+            border-left: 4px solid var(--info);
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box.success {
+            background: rgba(0, 255, 159, 0.05);
+            border-left-color: var(--success);
+        }
+        
+        .info-box.warning {
+            background: rgba(255, 165, 2, 0.05);
+            border-left-color: var(--warning);
+        }
+        
+        .info-box.error {
+            background: rgba(255, 71, 87, 0.05);
+            border-left-color: var(--error);
+        }
+        
+        .info-box-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .feature-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.2);
+        }
+        
+        .feature-card h4 {
+            margin-top: 0;
+            color: var(--accent-primary);
+        }
+        
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        table th,
+        table td {
+            padding: 0.875rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        table th {
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+        
+        table tr:hover {
+            background: rgba(0, 212, 255, 0.03);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">🇫🇷</div>
+                <div class="logo-text">
+                    <h1>LAXA IDE</h1>
+                    <p>Mon Langage de Programmation Français</p>
+                </div>
+            </a>
+            <div class="header-nav">
+                <a href="/" class="nav-btn">💻 IDE</a>
+                <a href="/documentation" class="nav-btn nav-btn-primary">📚 Documentation</a>
+                <a href="/documentation-technique" class="nav-btn">🏗️ Technique</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <div class="hero">
+            <h1>📚 Documentation LAXA</h1>
+            <p>Guide complet pour maîtriser le langage de programmation français LAXA</p>
+        </div>
+        
+        <div class="content-wrapper">
+            <aside class="sidebar">
+                <h3>Navigation</h3>
+                <nav>
+                    <a href="#introduction">Introduction</a>
+                    <a href="#premiers-pas">Premiers Pas</a>
+                    <a href="#variables">Variables</a>
+                    <a href="#operateurs">Opérateurs</a>
+                    <a href="#conditions">Conditions</a>
+                    <a href="#boucles">Boucles</a>
+                    <a href="#fonctions">Fonctions</a>
+                    <a href="#collections">Collections</a>
+                    <a href="#entrees">Entrées Utilisateur</a>
+                    <a href="#fonctions-builtin">Fonctions Intégrées</a>
+                    <a href="#exemples">Exemples</a>
+                </nav>
+            </aside>
+            
+            <main class="content">
+                <!-- Introduction -->
+                <section id="introduction" class="section">
+                    <h2>🎯 Introduction</h2>
+                    <p>LAXA (Mon Langage Français) est un langage de programmation éducatif conçu pour faciliter l'apprentissage de la programmation en français. Il offre une syntaxe claire et intuitive, parfaite pour les débutants.</p>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h4>🇫🇷 100% Français</h4>
+                            <p>Syntaxe entièrement en français pour une meilleure compréhension</p>
+                        </div>
+                        <div class="feature-card">
+                            <h4>💡 Simple et Intuitif</h4>
+                            <p>Conçu pour être facile à apprendre et à utiliser</p>
+                        </div>
+                        <div class="feature-card">
+                            <h4>🚀 Interactif</h4>
+                            <p>IDE web intégré avec exécution en temps réel</p>
+                        </div>
+                        <div class="feature-card">
+                            <h4>🔧 Complet</h4>
+                            <p>Fonctions mathématiques, manipulation de chaînes, et plus</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Premiers Pas -->
+                <section id="premiers-pas" class="section">
+                    <h2>🚀 Premiers Pas</h2>
+                    
+                    <h3>Votre Premier Programme</h3>
+                    <p>Commençons par le traditionnel "Bonjour le monde" :</p>
+                    
+                    <div class="code-block">
+<pre>afficher "Bonjour le monde !"</pre>
+                    </div>
+                    
+                    <div class="info-box success">
+                        <div class="info-box-title">✅ C'est fait !</div>
+                        <p>Vous venez d'écrire votre premier programme en LAXA. Copiez ce code dans l'IDE et cliquez sur "Exécuter" pour le tester.</p>
+                    </div>
+                </section>
+                
+                <!-- Variables -->
+                <section id="variables" class="section">
+                    <h2>📝 Variables et Types de Données</h2>
+                    
+                    <h3>Déclaration de Variables</h3>
+                    <p>En LAXA, les variables se déclarent avec le mot-clé <code>variable</code> :</p>
+                    
+                    <div class="code-block">
+<pre># Déclaration avec valeur initiale
+variable nom = "Alice"
+variable age = 25
+variable actif = vrai
+
+# Modification d'une variable
+age = 26
+nom = "Bob"</pre>
+                    </div>
+                    
+                    <h3>Types de Données</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Exemple</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Nombres</strong></td>
+                                <td>Entiers et décimaux</td>
+                                <td><code>42</code>, <code>3.14</code>, <code>-10</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Chaînes</strong></td>
+                                <td>Texte entre guillemets</td>
+                                <td><code>"Bonjour"</code>, <code>"Hello World"</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Booléens</strong></td>
+                                <td>Vrai ou faux</td>
+                                <td><code>vrai</code>, <code>faux</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tableaux</strong></td>
+                                <td>Listes d'éléments</td>
+                                <td><code>[1, 2, 3]</code>, <code>["a", "b"]</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dictionnaires</strong></td>
+                                <td>Paires clé-valeur</td>
+                                <td><code>{"nom": "Alice", "age": 25}</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                
+                <!-- Opérateurs -->
+                <section id="operateurs" class="section">
+                    <h2>🔢 Opérateurs</h2>
+                    
+                    <h3>Opérateurs Arithmétiques</h3>
+                    <div class="code-block">
+<pre>variable a = 10
+variable b = 3
+
+afficher a + b    # 13 (addition)
+afficher a - b    # 7 (soustraction)
+afficher a * b    # 30 (multiplication)
+afficher a / b    # 3.333... (division)</pre>
+                    </div>
+                    
+                    <h3>Opérateurs de Comparaison</h3>
+                    <div class="code-block">
+<pre>variable x = 10
+variable y = 5
+
+afficher x > y     # vrai (plus grand que)
+afficher x < y     # faux (plus petit que)
+afficher x >= y    # vrai (plus grand ou égal)
+afficher x <= y    # faux (plus petit ou égal)
+afficher x == y    # faux (égal à)
+afficher x != y    # vrai (différent de)</pre>
+                    </div>
+                    
+                    <h3>Opérateurs Logiques</h3>
+                    <div class="code-block">
+<pre>variable a = vrai
+variable b = faux
+
+afficher a et b    # faux (ET logique)
+afficher a ou b    # vrai (OU logique)
+afficher non a     # faux (NON logique)</pre>
+                    </div>
+                </section>
+                
+                <!-- Conditions -->
+                <section id="conditions" class="section">
+                    <h2>🔀 Structures Conditionnelles</h2>
+                    
+                    <h3>Condition Simple</h3>
+                    <div class="code-block">
+<pre>variable age = 18
+
+si age >= 18
+    afficher "Vous êtes majeur"
+fin_si</pre>
+                    </div>
+                    
+                    <h3>Condition avec Alternative</h3>
+                    <div class="code-block">
+<pre>variable note = 15
+
+si note >= 10
+    afficher "Admis !"
+sinon
+    afficher "Recalé..."
+fin_si</pre>
+                    </div>
+                    
+                    <h3>Conditions Imbriquées</h3>
+                    <div class="code-block">
+<pre>variable note = 15
+
+si note >= 16
+    afficher "Très bien"
+sinon
+    si note >= 14
+        afficher "Bien"
+    sinon
+        si note >= 12
+            afficher "Assez bien"
+        sinon
+            afficher "Passable"
+        fin_si
+    fin_si
+fin_si</pre>
+                    </div>
+                    
+                    <div class="info-box">
+                        <div class="info-box-title">💡 Astuce</div>
+                        <p>N'oubliez pas de fermer chaque condition avec <code>fin_si</code> !</p>
+                    </div>
+                </section>
+                
+                <!-- Boucles -->
+                <section id="boucles" class="section">
+                    <h2>🔁 Boucles</h2>
+                    
+                    <h3>Boucle Tant Que</h3>
+                    <p>La boucle <code>tant_que</code> répète un bloc de code tant qu'une condition est vraie :</p>
+                    
+                    <div class="code-block">
+<pre>variable i = 0
+
+tant_que i < 5
+    afficher "Itération " + i
+    i = i + 1
+fin_tant_que</pre>
+                    </div>
+                    
+                    <h3>Exemple : Compte à Rebours</h3>
+                    <div class="code-block">
+<pre>variable compte = 5
+
+tant_que compte > 0
+    afficher compte
+    compte = compte - 1
+fin_tant_que
+
+afficher "Décollage !"</pre>
+                    </div>
+                    
+                    <div class="info-box warning">
+                        <div class="info-box-title">⚠️ Attention</div>
+                        <p>Assurez-vous que la condition de la boucle finira par devenir fausse, sinon vous créerez une boucle infinie !</p>
+                    </div>
+                </section>
+                
+                <!-- Fonctions -->
+                <section id="fonctions" class="section">
+                    <h2>🎯 Fonctions</h2>
+                    
+                    <h3>Définir une Fonction</h3>
+                    <div class="code-block">
+<pre>fonction saluer(nom)
+    afficher "Bonjour " + nom + " !"
+fin_fonction
+
+# Appel de la fonction
+saluer("Alice")
+saluer("Bob")</pre>
+                    </div>
+                    
+                    <h3>Fonction avec Retour</h3>
+                    <div class="code-block">
+<pre>fonction carre(nombre)
+    retour nombre * nombre
+fin_fonction
+
+variable resultat = carre(5)
+afficher "Le carré de 5 est " + resultat  # 25</pre>
+                    </div>
+                    
+                    <h3>Fonction avec Plusieurs Paramètres</h3>
+                    <div class="code-block">
+<pre>fonction additionner(a, b)
+    retour a + b
+fin_fonction
+
+variable somme = additionner(10, 5)
+afficher "10 + 5 = " + somme  # 15</pre>
+                    </div>
+                </section>
+                
+                <!-- Collections -->
+                <section id="collections" class="section">
+                    <h2>📋 Collections</h2>
+                    
+                    <h3>Tableaux</h3>
+                    <p>Les tableaux permettent de stocker plusieurs valeurs dans une seule variable :</p>
+                    
+                    <div class="code-block">
+<pre># Création d'un tableau
+variable nombres = [1, 2, 3, 4, 5]
+variable fruits = ["pomme", "banane", "orange"]
+
+# Accès aux éléments (l'index commence à 0)
+afficher nombres[0]    # 1
+afficher fruits[1]     # banane
+
+# Modification d'un élément
+nombres[2] = 99
+afficher nombres       # [1, 2, 99, 4, 5]
+
+# Longueur d'un tableau
+afficher len(nombres)  # 5</pre>
+                    </div>
+                    
+                    <h3>Dictionnaires</h3>
+                    <p>Les dictionnaires stockent des paires clé-valeur :</p>
+                    
+                    <div class="code-block">
+<pre># Création d'un dictionnaire
+variable personne = {"nom": "Alice", "age": 25, "ville": "Paris"}
+
+# Accès aux valeurs
+afficher personne["nom"]     # Alice
+afficher personne["age"]     # 25
+
+# Modification et ajout
+personne["age"] = 26
+personne["pays"] = "France"
+
+afficher personne</pre>
+                    </div>
+                </section>
+                
+                <!-- Entrées Utilisateur -->
+                <section id="entrees" class="section">
+                    <h2>⌨️ Entrées Utilisateur</h2>
+                    
+                    <h3>Fonctions lire() et input()</h3>
+                    <p>LAXA propose deux fonctions pour récupérer les entrées utilisateur :</p>
+                    
+                    <div class="code-block">
+<pre>variable nom = lire("Votre nom: ")
+variable age = input("Votre âge: ")
+
+afficher "Bonjour " + nom
+afficher "Vous avez " + age + " ans"</pre>
+                    </div>
+                    
+                    <h3>Conversion Automatique</h3>
+                    <p>Les entrées numériques sont automatiquement converties :</p>
+                    
+                    <div class="code-block">
+<pre># Si l'utilisateur entre "16", c'est automatiquement converti en nombre
+variable nombre = input("Entrez un nombre: ")
+afficher "Racine carrée: " + sqrt(nombre)
+afficher "Carré: " + (nombre * nombre)</pre>
+                    </div>
+                    
+                    <div class="info-box success">
+                        <div class="info-box-title">✨ Fonctionnalité Avancée</div>
+                        <p>Dans l'IDE web, une interface interactive apparaît automatiquement pour saisir les valeurs lorsque votre programme contient des fonctions <code>lire()</code> ou <code>input()</code>.</p>
+                    </div>
+                </section>
+                
+                <!-- Fonctions Built-in -->
+                <section id="fonctions-builtin" class="section">
+                    <h2>🔧 Fonctions Intégrées</h2>
+                    
+                    <h3>Fonctions Mathématiques</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fonction</th>
+                                <th>Description</th>
+                                <th>Exemple</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>sqrt(x)</code></td>
+                                <td>Racine carrée</td>
+                                <td><code>sqrt(16)</code> → 4.0</td>
+                            </tr>
+                            <tr>
+                                <td><code>abs(x)</code></td>
+                                <td>Valeur absolue</td>
+                                <td><code>abs(-5)</code> → 5</td>
+                            </tr>
+                            <tr>
+                                <td><code>round(x)</code></td>
+                                <td>Arrondi</td>
+                                <td><code>round(3.7)</code> → 4</td>
+                            </tr>
+                            <tr>
+                                <td><code>sin(x)</code></td>
+                                <td>Sinus</td>
+                                <td><code>sin(0)</code> → 0.0</td>
+                            </tr>
+                            <tr>
+                                <td><code>cos(x)</code></td>
+                                <td>Cosinus</td>
+                                <td><code>cos(0)</code> → 1.0</td>
+                            </tr>
+                            <tr>
+                                <td><code>tan(x)</code></td>
+                                <td>Tangente</td>
+                                <td><code>tan(0)</code> → 0.0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h3>Fonctions de Chaînes</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fonction</th>
+                                <th>Description</th>
+                                <th>Exemple</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>maj(texte)</code></td>
+                                <td>Convertir en majuscules</td>
+                                <td><code>maj("bonjour")</code> → "BONJOUR"</td>
+                            </tr>
+                            <tr>
+                                <td><code>min(texte)</code></td>
+                                <td>Convertir en minuscules</td>
+                                <td><code>min("HELLO")</code> → "hello"</td>
+                            </tr>
+                            <tr>
+                                <td><code>len(x)</code></td>
+                                <td>Longueur</td>
+                                <td><code>len("Bonjour")</code> → 7</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h3>Fonctions Utilitaires</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fonction</th>
+                                <th>Description</th>
+                                <th>Exemple</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>random()</code></td>
+                                <td>Nombre aléatoire (0-1)</td>
+                                <td><code>random()</code> → 0.7234...</td>
+                            </tr>
+                            <tr>
+                                <td><code>date()</code></td>
+                                <td>Date actuelle</td>
+                                <td><code>date()</code> → "2024-10-09"</td>
+                            </tr>
+                            <tr>
+                                <td><code>heure()</code></td>
+                                <td>Heure actuelle</td>
+                                <td><code>heure()</code> → "14:30:25"</td>
+                            </tr>
+                            <tr>
+                                <td><code>annee()</code></td>
+                                <td>Année actuelle</td>
+                                <td><code>annee()</code> → 2024</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                
+                <!-- Exemples -->
+                <section id="exemples" class="section">
+                    <h2>📖 Exemples Pratiques</h2>
+                    
+                    <h3>Exemple 1 : Calculatrice</h3>
+                    <div class="code-block">
+<pre>fonction calculer(a, b, operation)
+    si operation == "+"
+        retour a + b
+    sinon
+        si operation == "-"
+            retour a - b
+        sinon
+            si operation == "*"
+                retour a * b
+            sinon
+                retour a / b
+            fin_si
+        fin_si
+    fin_si
+fin_fonction
+
+variable x = 10
+variable y = 5
+
+afficher "10 + 5 = " + calculer(x, y, "+")
+afficher "10 - 5 = " + calculer(x, y, "-")
+afficher "10 * 5 = " + calculer(x, y, "*")
+afficher "10 / 5 = " + calculer(x, y, "/")</pre>
+                    </div>
+                    
+                    <h3>Exemple 2 : Calcul de Moyenne</h3>
+                    <div class="code-block">
+<pre>variable notes = [15, 12, 18, 14, 16]
+variable somme = 0
+variable i = 0
+
+tant_que i < len(notes)
+    somme = somme + notes[i]
+    i = i + 1
+fin_tant_que
+
+variable moyenne = somme / len(notes)
+afficher "Moyenne des notes: " + moyenne</pre>
+                    </div>
+                    
+                    <h3>Exemple 3 : Programme Interactif</h3>
+                    <div class="code-block">
+<pre>afficher "=== Programme de saisie ==="
+
+variable nom = lire("Votre nom: ")
+variable age = input("Votre âge: ")
+variable ville = lire("Votre ville: ")
+
+afficher "━━━━━━━━━━━━━━━━━━━━"
+afficher "Bonjour " + nom + " !"
+afficher "Vous avez " + age + " ans"
+afficher "Vous habitez à " + ville
+
+variable age_prochain = age + 1
+afficher "L'année prochaine, vous aurez " + age_prochain + " ans"
+
+si age >= 18
+    afficher "✅ Vous êtes majeur(e)"
+sinon
+    afficher "⏳ Vous êtes mineur(e)"
+fin_si</pre>
+                    </div>
+                    
+                    <h3>Exemple 4 : Suite de Fibonacci</h3>
+                    <div class="code-block">
+<pre>variable a = 0
+variable b = 1
+variable count = 10
+
+afficher "Suite de Fibonacci (10 premiers termes) :"
+
+variable i = 0
+tant_que i < count
+    afficher a
+    variable temp = a + b
+    a = b
+    b = temp
+    i = i + 1
+fin_tant_que</pre>
+                    </div>
+                    
+                    <h3>Exemple 5 : Calculatrice Scientifique</h3>
+                    <div class="code-block">
+<pre>afficher "=== Calculatrice Scientifique ==="
+
+variable x = input("Entrez x: ")
+variable y = input("Entrez y: ")
+
+afficher "━━━━━━━━━━━━━━━━━━━━"
+afficher "Résultats :"
+afficher "x + y = " + (x + y)
+afficher "x - y = " + (x - y)
+afficher "x * y = " + (x * y)
+afficher "x / y = " + (x / y)
+afficher ""
+afficher "Racine de x = " + sqrt(x)
+afficher "Racine de y = " + sqrt(y)
+afficher "Sinus de x = " + sin(x)
+afficher "Cosinus de y = " + cos(y)
+afficher "Valeur absolue de (x-y) = " + abs(x - y)</pre>
+                    </div>
+                </section>
+                
+                <div class="info-box">
+                    <div class="info-box-title">🎓 Prêt à coder ?</div>
+                    <p>Retournez à l'<a href="/" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">IDE</a> pour tester ces exemples et créer vos propres programmes !</p>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        // Smooth scrolling pour les liens d'ancrage
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Mettre à jour l'active state
+                    document.querySelectorAll('.sidebar nav a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+        
+        // Highlight de la section active pendant le scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.sidebar nav a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

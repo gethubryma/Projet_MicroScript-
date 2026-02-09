@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Technique - LAXA | Architecture & API</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-tertiary: #16213e;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #00ff9f;
+            --accent-tertiary: #ff6b6b;
+            --accent-warning: #ffa502;
+            --accent-gradient: linear-gradient(135deg, #00d4ff 0%, #00ff9f 100%);
+            --text-primary: #e6e6e6;
+            --text-secondary: #a0a0a0;
+            --border-color: #2d2d44;
+            --success: #00ff9f;
+            --error: #ff4757;
+            --warning: #ffa502;
+            --info: #00d4ff;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+        }
+        
+        /* Header */
+        header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--bg-primary);
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+        }
+        
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .header-nav {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .nav-btn {
+            padding: 0.625rem 1.25rem;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            border-color: var(--accent-primary);
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn-primary {
+            background: var(--accent-gradient);
+            color: var(--bg-primary);
+            border: none;
+            box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+        }
+        
+        .nav-btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+        }
+        
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(0, 255, 159, 0.05) 100%);
+            border-radius: 24px;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Sidebar Navigation */
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        
+        .sidebar {
+            position: sticky;
+            top: 120px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .sidebar h3 {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar nav a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            margin-bottom: 0.25rem;
+        }
+        
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent-primary);
+        }
+        
+        /* Content */
+        .content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .section {
+            margin-bottom: 4rem;
+        }
+        
+        .section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .section h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .section p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+        
+        .section ul, .section ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Code Blocks */
+        .code-block {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        
+        .code-block pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-tertiary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875em;
+            color: var(--accent-secondary);
+        }
+        
+        /* Info Boxes */
+        .info-box {
+            background: rgba(0, 212, 255, 0.05);
+            border-left: 4px solid var(--info);
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box.success {
+            background: rgba(0, 255, 159, 0.05);
+            border-left-color: var(--success);
+        }
+        
+        .info-box.warning {
+            background: rgba(255, 165, 2, 0.05);
+            border-left-color: var(--warning);
+        }
+        
+        .info-box.error {
+            background: rgba(255, 71, 87, 0.05);
+            border-left-color: var(--error);
+        }
+        
+        .info-box-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Architecture Diagram */
+        .arch-diagram {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .arch-layer {
+            background: var(--bg-primary);
+            border: 2px solid var(--accent-primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        .arch-layer h4 {
+            color: var(--accent-primary);
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .arch-arrow {
+            font-size: 2rem;
+            color: var(--accent-secondary);
+            margin: 0.5rem 0;
+        }
+        
+        /* Component Grid */
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .component-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .component-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 212, 255, 0.2);
+        }
+        
+        .component-card h4 {
+            margin: 0 0 0.75rem 0;
+            color: var(--accent-primary);
+            font-size: 1.125rem;
+        }
+        
+        .component-card .file-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            color: var(--accent-secondary);
+            margin-bottom: 0.75rem;
+        }
+        
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        table th,
+        table td {
+            padding: 0.875rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        table th {
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+        
+        table tr:hover {
+            background: rgba(0, 212, 255, 0.03);
+        }
+        
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+        
+        .badge-success {
+            background: rgba(0, 255, 159, 0.2);
+            color: var(--success);
+        }
+        
+        .badge-warning {
+            background: rgba(255, 165, 2, 0.2);
+            color: var(--warning);
+        }
+        
+        .badge-info {
+            background: rgba(0, 212, 255, 0.2);
+            color: var(--info);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/" class="logo">
+                <div class="logo-icon">🇫🇷</div>
+                <div class="logo-text">
+                    <h1>LAXA IDE</h1>
+                    <p>Mon Langage de Programmation Français</p>
+                </div>
+            </a>
+            <div class="header-nav">
+                <a href="/" class="nav-btn">💻 IDE</a>
+                <a href="/documentation" class="nav-btn">📚 Documentation</a>
+                <a href="/documentation-technique" class="nav-btn nav-btn-primary">🏗️ Technique</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="main-container">
+        <div class="hero">
+            <h1>🏗️ Documentation Technique</h1>
+            <p>Architecture, API et détails d'implémentation du langage LAXA</p>
+        </div>
+        
+        <div class="content-wrapper">
+            <aside class="sidebar">
+                <h3>Navigation</h3>
+                <nav>
+                    <a href="#architecture">Architecture</a>
+                    <a href="#composants">Composants</a>
+                    <a href="#flux">Flux d'Exécution</a>
+                    <a href="#api">API Backend</a>
+                    <a href="#lexer">Lexer</a>
+                    <a href="#parser">Parser</a>
+                    <a href="#interpreteur">Interpréteur</a>
+                    <a href="#deployment">Déploiement</a>
+                    <a href="#contribution">Contribution</a>
+                </nav>
+            </aside>
+            
+            <main class="content">
+                <!-- Architecture -->
+                <section id="architecture" class="section">
+                    <h2>🏛️ Architecture Globale</h2>
+                    
+                    <p>LAXA est construit selon une architecture en couches classique pour un interpréteur de langage, avec une interface web moderne.</p>
+                    
+                    <div class="arch-diagram">
+                        <div class="arch-layer">
+                            <h4>🌐 Frontend (HTML/CSS/JavaScript)</h4>
+                            <p>Interface utilisateur, éditeur de code, affichage des résultats</p>
+                        </div>
+                        
+                        <div class="arch-arrow">↕️</div>
+                        
+                        <div class="arch-layer">
+                            <h4>🔌 API REST (Flask)</h4>
+                            <p>Serveur web, routage, gestion des requêtes</p>
+                        </div>
+                        
+                        <div class="arch-arrow">↓</div>
+                        
+                        <div class="arch-layer">
+                            <h4>🔤 Lexer (Analyse Lexicale)</h4>
+                            <p>Conversion du code source en tokens</p>
+                        </div>
+                        
+                        <div class="arch-arrow">↓</div>
+                        
+                        <div class="arch-layer">
+                            <h4>🌳 Parser (Analyse Syntaxique)</h4>
+                            <p>Construction de l'Arbre de Syntaxe Abstraite (AST)</p>
+                        </div>
+                        
+                        <div class="arch-arrow">↓</div>
+                        
+                        <div class="arch-layer">
+                            <h4>⚙️ Interpréteur (Exécution)</h4>
+                            <p>Évaluation de l'AST et production des résultats</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Principes de Design</h3>
+                    <ul>
+                        <li><strong>Séparation des responsabilités :</strong> Chaque composant a un rôle bien défini</li>
+                        <li><strong>Pipeline de compilation :</strong> Traitement séquentiel du code source</li>
+                        <li><strong>API REST :</strong> Communication frontend/backend via JSON</li>
+                        <li><strong>Modularité :</strong> Composants indépendants et réutilisables</li>
+                        <li><strong>Extensibilité :</strong> Facilité d'ajout de nouvelles fonctionnalités</li>
+                    </ul>
+                </section>
+                
+                <!-- Composants -->
+                <section id="composants" class="section">
+                    <h2>🧩 Composants du Système</h2>
+                    
+                    <div class="component-grid">
+                        <div class="component-card">
+                            <h4>📄 app.py</h4>
+                            <div class="file-name">Serveur Flask</div>
+                            <p>Point d'entrée de l'application. Gère les routes HTTP et orchestre les différents composants.</p>
+                            <span class="badge badge-success">Backend</span>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>🔤 lexer.py</h4>
+                            <div class="file-name">Analyseur Lexical</div>
+                            <p>Transforme le code source en une liste de tokens (mots-clés, identifiants, opérateurs...).</p>
+                            <span class="badge badge-info">Core</span>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>🌳 parser.py</h4>
+                            <div class="file-name">Analyseur Syntaxique</div>
+                            <p>Construit l'Arbre de Syntaxe Abstraite (AST) à partir des tokens.</p>
+                            <span class="badge badge-info">Core</span>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>⚙️ interpreteur.py</h4>
+                            <div class="file-name">Interpréteur</div>
+                            <p>Évalue l'AST et exécute le code, gère les variables et les fonctions.</p>
+                            <span class="badge badge-info">Core</span>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>📋 syntaxe.py</h4>
+                            <div class="file-name">Définition Syntaxe</div>
+                            <p>Définit les mots-clés, opérateurs et séparateurs du langage.</p>
+                            <span class="badge badge-warning">Config</span>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>🎨 index.html</h4>
+                            <div class="file-name">Interface IDE</div>
+                            <p>Interface utilisateur principale avec éditeur de code et zone de résultats.</p>
+                            <span class="badge badge-success">Frontend</span>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Flux d'Exécution -->
+                <section id="flux" class="section">
+                    <h2>🔄 Flux d'Exécution</h2>
+                    
+                    <h3>1️⃣ Saisie du Code</h3>
+                    <p>L'utilisateur écrit du code LAXA dans l'éditeur web et clique sur "Exécuter".</p>
+                    
+                    <h3>2️⃣ Requête HTTP</h3>
+                    <div class="code-block">
+<pre>POST /executer
+Content-Type: application/json
+
+{
+  "code": "variable x = 10\nafficher x",
+  "entrees": []
+}</pre>
+                    </div>
+                    
+                    <h3>3️⃣ Analyse Lexicale (Lexer)</h3>
+                    <p>Le code source est transformé en tokens :</p>
+                    <div class="code-block">
+<pre>"variable x = 10" → [
+  {type: 'MOT_CLE', valeur: 'variable'},
+  {type: 'IDENTIFIANT', valeur: 'x'},
+  {type: 'OPERATEUR', valeur: '='},
+  {type: 'NOMBRE', valeur: 10}
+]</pre>
+                    </div>
+                    
+                    <h3>4️⃣ Analyse Syntaxique (Parser)</h3>
+                    <p>Les tokens sont organisés en Arbre de Syntaxe Abstraite (AST) :</p>
+                    <div class="code-block">
+<pre>NoeudProgramme
+├── NoeudDeclarationVariable
+│   ├── nom: "x"
+│   └── valeur: NoeudNombre(10)
+└── NoeudAfficher
+    └── expression: NoeudVariable("x")</pre>
+                    </div>
+                    
+                    <h3>5️⃣ Exécution (Interpréteur)</h3>
+                    <p>L'AST est parcouru et exécuté nœud par nœud :</p>
+                    <ul>
+                        <li>Création de la variable <code>x</code> avec la valeur <code>10</code></li>
+                        <li>Évaluation de l'expression <code>x</code> → <code>10</code></li>
+                        <li>Affichage du résultat : <code>"10"</code></li>
+                    </ul>
+                    
+                    <h3>6️⃣ Réponse HTTP</h3>
+                    <div class="code-block">
+<pre>{
+  "success": true,
+  "resultat": ["10"],
+  "variables": {"x": 10},
+  "tokens": [...],
+  "entrees_requises": []
+}</pre>
+                    </div>
+                    
+                    <h3>7️⃣ Affichage</h3>
+                    <p>Le frontend reçoit la réponse et affiche les résultats à l'utilisateur.</p>
+                </section>
+                
+                <!-- API Backend -->
+                <section id="api" class="section">
+                    <h2>🔌 API Backend</h2>
+                    
+                    <h3>Routes Disponibles</h3>
+                    
+                    <h4>GET /</h4>
+                    <p>Page d'accueil - IDE principal</p>
+                    <div class="info-box">
+                        <div class="info-box-title">📄 Réponse</div>
+                        <p>HTML - Interface de l'éditeur de code</p>
+                    </div>
+                    
+                    <h4>GET /documentation</h4>
+                    <p>Page de documentation utilisateur</p>
+                    <div class="info-box">
+                        <div class="info-box-title">📄 Réponse</div>
+                        <p>HTML - Guide d'utilisation du langage</p>
+                    </div>
+                    
+                    <h4>GET /documentation-technique</h4>
+                    <p>Page de documentation technique (cette page)</p>
+                    <div class="info-box">
+                        <div class="info-box-title">📄 Réponse</div>
+                        <p>HTML - Documentation technique et architecture</p>
+                    </div>
+                    
+                    <h4>POST /executer</h4>
+                    <p>Exécute du code LAXA et retourne les résultats</p>
+                    
+                    <div class="info-box">
+                        <div class="info-box-title">📥 Requête</div>
+                        <div class="code-block">
+<pre>{
+  "code": string,        // Code LAXA à exécuter
+  "entrees": string[]    // Entrées utilisateur (optionnel)
+}</pre>
+                        </div>
+                    </div>
+                    
+                    <div class="info-box success">
+                        <div class="info-box-title">📤 Réponse (Succès)</div>
+                        <div class="code-block">
+<pre>{
+  "success": true,
+  "resultat": string[],           // Sortie du programme
+  "variables": object,            // État des variables
+  "tokens": object[],             // Tokens générés (debug)
+  "entrees_requises": string[]    // Prompts d'entrée
+}</pre>
+                        </div>
+                    </div>
+                    
+                    <div class="info-box error">
+                        <div class="info-box-title">📤 Réponse (Erreur)</div>
+                        <div class="code-block">
+<pre>{
+  "success": false,
+  "erreur": string    // Message d'erreur
+}</pre>
+                        </div>
+                    </div>
+                    
+                    <h3>Exemple d'Utilisation de l'API</h3>
+                    <div class="code-block">
+<pre># Avec curl
+curl -X POST http://localhost:5009/executer \
+  -H "Content-Type: application/json" \
+  -d '{
+    "code": "variable nom = \"Alice\"\nafficher \"Bonjour \" + nom",
+    "entrees": []
+  }'
+
+# Réponse
+{
+  "success": true,
+  "resultat": ["Bonjour Alice"],
+  "variables": {"nom": "Alice"},
+  "tokens": [...],
+  "entrees_requises": []
+}</pre>
+                    </div>
+                </section>
+                
+                <!-- Lexer -->
+                <section id="lexer" class="section">
+                    <h2>🔤 Lexer - Analyse Lexicale</h2>
+                    
+                    <h3>Responsabilité</h3>
+                    <p>Le lexer transforme une chaîne de caractères (code source) en une séquence de tokens.</p>
+                    
+                    <h3>Types de Tokens</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Exemples</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>MOT_CLE</code></td>
+                                <td>Mots réservés du langage</td>
+                                <td>variable, si, tant_que, fonction</td>
+                            </tr>
+                            <tr>
+                                <td><code>IDENTIFIANT</code></td>
+                                <td>Noms de variables/fonctions</td>
+                                <td>x, nom, calculer</td>
+                            </tr>
+                            <tr>
+                                <td><code>NOMBRE</code></td>
+                                <td>Littéraux numériques</td>
+                                <td>42, 3.14, -5</td>
+                            </tr>
+                            <tr>
+                                <td><code>CHAINE</code></td>
+                                <td>Chaînes de caractères</td>
+                                <td>"Bonjour", "Hello World"</td>
+                            </tr>
+                            <tr>
+                                <td><code>BOOLEEN</code></td>
+                                <td>Valeurs booléennes</td>
+                                <td>vrai, faux</td>
+                            </tr>
+                            <tr>
+                                <td><code>OPERATEUR</code></td>
+                                <td>Opérateurs arithmétiques/logiques</td>
+                                <td>+, -, *, ==, et, ou</td>
+                            </tr>
+                            <tr>
+                                <td><code>SEPARATEUR</code></td>
+                                <td>Séparateurs syntaxiques</td>
+                                <td>(, ), [, ], {, }, ,</td>
+                            </tr>
+                            <tr>
+                                <td><code>FONCTION_BUILTIN</code></td>
+                                <td>Fonctions intégrées</td>
+                                <td>afficher, lire, sqrt, len</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h3>Processus de Tokenisation</h3>
+                    <ol>
+                        <li>Ignorer les espaces et commentaires</li>
+                        <li>Identifier les nombres (entiers et décimaux)</li>
+                        <li>Identifier les chaînes (délimitées par ")</li>
+                        <li>Identifier les identifiants et mots-clés</li>
+                        <li>Identifier les opérateurs (plus longs en premier)</li>
+                        <li>Identifier les séparateurs</li>
+                    </ol>
+                    
+                    <h3>Exemple de Tokenisation</h3>
+                    <div class="code-block">
+<pre>Code:
+variable x = 10 + 5
+
+Tokens:
+[
+  {type: 'MOT_CLE', valeur: 'variable', ligne: 1, colonne: 1},
+  {type: 'IDENTIFIANT', valeur: 'x', ligne: 1, colonne: 10},
+  {type: 'OPERATEUR', valeur: '=', ligne: 1, colonne: 12},
+  {type: 'NOMBRE', valeur: 10, ligne: 1, colonne: 14},
+  {type: 'OPERATEUR', valeur: '+', ligne: 1, colonne: 17},
+  {type: 'NOMBRE', valeur: 5, ligne: 1, colonne: 19}
+]</pre>
+                    </div>
+                </section>
+                
+                <!-- Parser -->
+                <section id="parser" class="section">
+                    <h2>🌳 Parser - Analyse Syntaxique</h2>
+                    
+                    <h3>Responsabilité</h3>
+                    <p>Le parser transforme la liste de tokens en un Arbre de Syntaxe Abstraite (AST) qui représente la structure logique du programme.</p>
+                    
+                    <h3>Types de Nœuds AST</h3>
+                    <div class="component-grid">
+                        <div class="component-card">
+                            <h4>NoeudProgramme</h4>
+                            <p>Racine de l'AST, contient toutes les instructions.</p>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>NoeudDeclarationVariable</h4>
+                            <p>Déclaration d'une nouvelle variable.</p>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>NoeudAffectation</h4>
+                            <p>Affectation d'une valeur à une variable existante.</p>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>NoeudSi</h4>
+                            <p>Structure conditionnelle (si/sinon).</p>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>NoeudTantQue</h4>
+                            <p>Boucle tant_que.</p>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>NoeudFonction</h4>
+                            <p>Définition d'une fonction.</p>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>NoeudAppel</h4>
+                            <p>Appel de fonction.</p>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>NoeudExpressionBinaire</h4>
+                            <p>Opération binaire (+, -, *, etc.).</p>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>NoeudNombre/Chaine/Booleen</h4>
+                            <p>Littéraux (valeurs constantes).</p>
+                        </div>
+                    </div>
+                    
+                    <h3>Grammaire du Langage</h3>
+                    <div class="code-block">
+<pre>Programme       → Instruction*
+Instruction     → Declaration | Affectation | Si | TantQue | 
+                  Fonction | Retour | Afficher
+Declaration     → 'variable' IDENTIFIANT '=' Expression
+Affectation     → IDENTIFIANT '=' Expression
+Si              → 'si' Expression Bloc ('sinon' Bloc)? 'fin_si'
+TantQue         → 'tant_que' Expression Bloc 'fin_tant_que'
+Fonction        → 'fonction' IDENTIFIANT '(' Parametres ')' 
+                  Bloc 'fin_fonction'
+Expression      → Terme (('+' | '-') Terme)*
+Terme           → Facteur (('*' | '/') Facteur)*
+Facteur         → NOMBRE | CHAINE | BOOLEEN | IDENTIFIANT | 
+                  '(' Expression ')' | AppelFonction</pre>
+                    </div>
+                </section>
+                
+                <!-- Interpréteur -->
+                <section id="interpreteur" class="section">
+                    <h2>⚙️ Interpréteur - Exécution</h2>
+                    
+                    <h3>Responsabilité</h3>
+                    <p>L'interpréteur parcourt l'AST et exécute le code, en maintenant l'état du programme (variables, fonctions, sorties).</p>
+                    
+                    <h3>Composants de l'Interpréteur</h3>
+                    
+                    <h4>1. Environnement d'Exécution</h4>
+                    <ul>
+                        <li><code>variables</code> : Dictionnaire des variables et leurs valeurs</li>
+                        <li><code>fonctions</code> : Dictionnaire des fonctions définies</li>
+                        <li><code>sortie</code> : Liste des chaînes à afficher</li>
+                        <li><code>entrees_en_attente</code> : Prompts d'entrée requis</li>
+                        <li><code>entrees_fournies</code> : Valeurs fournies par l'utilisateur</li>
+                    </ul>
+                    
+                    <h4>2. Exécution des Instructions</h4>
+                    <p>Chaque type de nœud AST a une méthode d'exécution spécifique :</p>
+                    <ul>
+                        <li><strong>Déclaration :</strong> Ajoute la variable dans l'environnement</li>
+                        <li><strong>Affectation :</strong> Met à jour la valeur d'une variable</li>
+                        <li><strong>Condition :</strong> Évalue la condition et exécute le bon bloc</li>
+                        <li><strong>Boucle :</strong> Répète le bloc tant que la condition est vraie</li>
+                        <li><strong>Fonction :</strong> Enregistre la définition pour appel ultérieur</li>
+                    </ul>
+                    
+                    <h4>3. Évaluation des Expressions</h4>
+                    <p>Les expressions sont évaluées récursivement :</p>
+                    <ul>
+                        <li><strong>Littéraux :</strong> Retournent leur valeur directement</li>
+                        <li><strong>Variables :</strong> Récupèrent la valeur dans l'environnement</li>
+                        <li><strong>Opérations :</strong> Évaluent les opérandes puis appliquent l'opérateur</li>
+                        <li><strong>Appels :</strong> Exécutent la fonction avec les arguments évalués</li>
+                    </ul>
+                    
+                    <h3>Fonctions Intégrées</h3>
+                    <div class="component-grid">
+                        <div class="component-card">
+                            <h4>📤 Entrées/Sorties</h4>
+                            <p><code>afficher()</code>, <code>lire()</code>, <code>input()</code></p>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>🔢 Mathématiques</h4>
+                            <p><code>sqrt()</code>, <code>sin()</code>, <code>cos()</code>, <code>abs()</code>, <code>round()</code></p>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>📝 Chaînes</h4>
+                            <p><code>len()</code>, <code>maj()</code>, <code>min()</code></p>
+                        </div>
+                        
+                        <div class="component-card">
+                            <h4>🎲 Utilitaires</h4>
+                            <p><code>random()</code>, <code>date()</code>, <code>heure()</code>, <code>annee()</code></p>
+                        </div>
+                    </div>
+                    
+                    <h3>Gestion des Erreurs</h3>
+                    <p>L'interpréteur lève des exceptions pour les erreurs d'exécution :</p>
+                    <ul>
+                        <li>Variable non déclarée</li>
+                        <li>Variable déjà déclarée</li>
+                        <li>Fonction non définie</li>
+                        <li>Nombre d'arguments incorrect</li>
+                        <li>Division par zéro</li>
+                        <li>Type invalide pour une opération</li>
+                    </ul>
+                </section>
+                
+                <!-- Déploiement -->
+                <section id="deployment" class="section">
+                    <h2>🚀 Déploiement</h2>
+                    
+                    <h3>Configuration Serveur</h3>
+                    <div class="code-block">
+<pre># Configuration Flask (app.py)
+if __name__ == '__main__':
+    import os
+    port = int(os.environ.get('PORT', '5004'))
+    host = os.environ.get('HOST', '0.0.0.0')
+    app.run(debug=True, host=host, port=port)</pre>
+                    </div>
+                    
+                    <h3>Variables d'Environnement</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>Défaut</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>PORT</code></td>
+                                <td>5004</td>
+                                <td>Port d'écoute du serveur</td>
+                            </tr>
+                            <tr>
+                                <td><code>HOST</code></td>
+                                <td>0.0.0.0</td>
+                                <td>Adresse d'écoute (0.0.0.0 = toutes interfaces)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h3>Déploiement avec Docker</h3>
+                    <div class="code-block">
+<pre># Construire l'image
+docker-compose build
+
+# Lancer le conteneur
+docker-compose up -d
+
+# Voir les logs
+docker-compose logs -f
+
+# Arrêter
+docker-compose down</pre>
+                    </div>
+                    
+                    <h3>Déploiement sur Serveur</h3>
+                    <ol>
+                        <li>Cloner le dépôt sur le serveur</li>
+                        <li>Installer Python 3.11+ et les dépendances</li>
+                        <li>Configurer nginx comme reverse proxy</li>
+                        <li>Utiliser gunicorn pour le serveur WSGI en production</li>
+                        <li>Configurer un service systemd pour le démarrage automatique</li>
+                    </ol>
+                    
+                    <div class="info-box warning">
+                        <div class="info-box-title">⚠️ Production</div>
+                        <p>Ne pas utiliser le serveur de développement Flask en production. Utilisez gunicorn ou uwsgi avec nginx.</p>
+                    </div>
+                </section>
+                
+                <!-- Contribution -->
+                <section id="contribution" class="section">
+                    <h2>🤝 Guide de Contribution</h2>
+                    
+                    <h3>Structure du Projet</h3>
+                    <div class="code-block">
+<pre>ProjetIT/
+├── app.py                  # Serveur Flask principal
+├── lexer.py                # Analyseur lexical
+├── parser.py               # Analyseur syntaxique
+├── interpreteur.py         # Interpréteur
+├── syntaxe.py              # Définition de la grammaire
+├── requirements.txt        # Dépendances Python
+├── Dockerfile              # Image Docker
+├── docker-compose.yml      # Orchestration
+├── nginx.conf              # Config Nginx
+├── templates/
+│   ├── index.html                  # Interface IDE
+│   ├── documentation.html          # Doc utilisateur
+│   └── documentation_technique.html # Doc technique
+└── README.md               # Documentation principale</pre>
+                    </div>
+                    
+                    <h3>Ajouter une Nouvelle Fonctionnalité</h3>
+                    
+                    <h4>1. Ajouter un Mot-Clé</h4>
+                    <p>Modifier <code>syntaxe.py</code> :</p>
+                    <div class="code-block">
+<pre>MOTS_CLES = {
+    ...
+    'nouveau_mot_cle': 'nouveau_mot_cle',
+}</pre>
+                    </div>
+                    
+                    <h4>2. Créer un Nœud AST</h4>
+                    <p>Dans <code>parser.py</code>, créer une nouvelle classe :</p>
+                    <div class="code-block">
+<pre>class NoeudNouveauType:
+    def __init__(self, parametres):
+        self.parametres = parametres</pre>
+                    </div>
+                    
+                    <h4>3. Parser le Nouveau Type</h4>
+                    <p>Ajouter une méthode dans <code>Parser</code> :</p>
+                    <div class="code-block">
+<pre>def analyser_nouveau_type(self):
+    # Logique de parsing
+    return NoeudNouveauType(...)</pre>
+                    </div>
+                    
+                    <h4>4. Implémenter l'Exécution</h4>
+                    <p>Dans <code>interpreteur.py</code> :</p>
+                    <div class="code-block">
+<pre>def executer_instruction(self, instruction):
+    ...
+    elif isinstance(instruction, NoeudNouveauType):
+        # Logique d'exécution
+        pass</pre>
+                    </div>
+                    
+                    <h3>Ajouter une Fonction Built-in</h3>
+                    <ol>
+                        <li>Ajouter le nom dans <code>syntaxe.py</code> : <code>FONCTIONS_BUILTIN</code></li>
+                        <li>Implémenter dans <code>interpreteur.py</code> : <code>_executer_fonction_builtin()</code></li>
+                    </ol>
+                    
+                    <div class="code-block">
+<pre># Dans syntaxe.py
+FONCTIONS_BUILTIN = {
+    ...,
+    'ma_fonction'
+}
+
+# Dans interpreteur.py
+def _executer_fonction_builtin(self, nom, args):
+    ...
+    elif nom == 'ma_fonction':
+        # Implémentation
+        return resultat</pre>
+                    </div>
+                    
+                    <h3>Tests</h3>
+                    <p>Tester les nouvelles fonctionnalités dans l'IDE web ou via l'API :</p>
+                    <div class="code-block">
+<pre>curl -X POST http://localhost:5009/executer \
+  -H "Content-Type: application/json" \
+  -d '{"code": "variable x = ma_fonction()", "entrees": []}'</pre>
+                    </div>
+                </section>
+                
+                <div class="info-box success">
+                    <div class="info-box-title">🎉 Prêt à Contribuer ?</div>
+                    <p>Retournez à l'<a href="/" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">IDE</a> pour tester vos modifications ou consultez la <a href="/documentation" style="color: var(--accent-primary); text-decoration: none; font-weight: 600;">documentation utilisateur</a> !</p>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        // Smooth scrolling pour les liens d'ancrage
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Mettre à jour l'active state
+                    document.querySelectorAll('.sidebar nav a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+        
+        // Highlight de la section active pendant le scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.sidebar nav a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
