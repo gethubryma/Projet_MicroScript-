@@ -1,0 +1,22 @@
+# Dépendances installées localement
+node_modules
+
+# Dossier de build local (Docker le créera à l'intérieur)
+dist
+
+# Fichiers de log NPM
+npm-debug.log
+
+# Fichiers de configuration de l'éditeur
+.vscode
+.idea
+
+# Cache de Vite
+.vite
+
+# Fichiers Git
+.git
+.gitignore
+
+# Variables d'environnement locales
+.env.local
